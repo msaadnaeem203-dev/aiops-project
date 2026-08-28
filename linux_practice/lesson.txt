@@ -1,1 +1,2 @@
 I am learning Linux commands.
+I am learning Git and Linux.
