@@ -1,0 +1,2 @@
+Hello Ubuntu!
+I am learning Linux.
