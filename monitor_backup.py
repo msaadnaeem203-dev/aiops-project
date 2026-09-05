@@ -33,8 +33,5 @@ while True:
 
     with open("monitor.log", "a") as log:
          log.write(f"{timestamp} | {message}\n")
-if "ALERT" in message:
-    with open ("alerts.log", "a") as alert_log: 
-        alert_log.write(f"{timestamp} | {message}\n")
 
     time.sleep(5)
