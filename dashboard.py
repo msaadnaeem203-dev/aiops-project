@@ -17,7 +17,7 @@ def dashboard():
 
     if cpu >= 80 or ram >= 80:
         health = "CRITICAL"
-    elif cpu >= 50 or ram >= 50:
+    elif cpu >= 70 or ram >= 70:
         health = "WARNING"
     else:
         health = "HEALTHY"
@@ -26,6 +26,7 @@ def dashboard():
     <html>
     <head>
         <title>AIOps Dashboard</title>
+    <meta http-equiv="refresh" content="5">
     </head>
     <body>
         <h1>AIOps Monitoring
