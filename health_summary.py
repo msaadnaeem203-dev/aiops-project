@@ -23,7 +23,7 @@ try:
     print("--------------------")
     print(f"Website: {website_status}")
     print(f"CPU: {cpu:.1f}% - {cpu_status}")
-    print(f"RAM: {ram:.1f}% - {cpu_status}")
+    print(f"RAM: {ram:.1f}% - {ram_status}")
     print(f"Overall Status: {overall_status}")
 
 except requests.RequestException as e:

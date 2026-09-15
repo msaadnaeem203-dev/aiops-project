@@ -1,41 +1,33 @@
 from flask import Flask
-import psutil
-import requests
+import subprocess
+import sys
 
 app = Flask(__name__)
 
 @app.route("/")
 def dashboard():
-    cpu = psutil.cpu_percent(interval=1)
-    ram = psutil.virtual_memory().percent
+    result = subprocess.run(
+        [sys.executable , "health_summary.py"],
+        capture_output=True,
+        text=True
+    )
 
-    try:
-        response = requests.get("https://example.com", timeout=5)
-        website = "UP" if response.status_code == 200 else "DOWN"
-    except:
-        website = "DOWN"
-
-    if cpu >= 80 or ram >= 80:
-        health = "CRITICAL"
-    elif cpu >= 70 or ram >= 70:
-        health = "WARNING"
-    else:
-        health = "HEALTHY"
+    output = result.stdout.strip()
 
     return f"""
     <html>
     <head>
-        <title>AIOps Dashboard</title>
-    <meta http-equiv="refresh" content="5">
+        <title>AIOps Health Dashboard</title>
+        <meta http-equiv="refresh" content="5">
     </head>
     <body>
-        <h1>AIOps Monitoring
-Dashboard</h1>
-        <hr>
-        <h2>Website: {website}</h2>
-        <h2>CPU: {cpu}%</h2>
-        <h2>RAM: {ram}%</h2>
-        <h2>Overall Status: {health}</h2>
+        <h1>AIOps Health Dashboard</h1>
+
+        <h2>Live Health Summary</h2>
+
+        <pre>{output}</pre>
+
+        <p>Dashboard refreshes every 5 seconds.</p>
     </body>
     </html>
     """
