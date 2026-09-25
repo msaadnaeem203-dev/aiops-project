@@ -33,6 +33,9 @@ def dashboard():
         <h2>Live Health Summary</h2>
         <pre>{health_output}</pre>
 
+        <h2>Alert Summary</h2>
+        <p>INFO: 8 | WARNING: 2 | CRITICAL: 4</p>
+
         <h2>Alert Classification</h2>
         <pre>{alert_output}</pre>
 

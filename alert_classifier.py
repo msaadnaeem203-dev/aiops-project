@@ -12,7 +12,7 @@ try:
     if not lines:
         print("No alerts found.")
     else:
-        for line in lines[-10:]:
+        for line in lines:
             cpu_match = re.search(r"CPU:\s*([\d.]+)%", line)
             ram_match = re.search(r"RAM:\s*([\d.]+)%", line)
 
