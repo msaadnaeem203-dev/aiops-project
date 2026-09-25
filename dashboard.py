@@ -6,13 +6,20 @@ app = Flask(__name__)
 
 @app.route("/")
 def dashboard():
-    result = subprocess.run(
-        [sys.executable , "health_summary.py"],
+    health = subprocess.run(
+        [sys.executable, "health_summary.py"],
         capture_output=True,
         text=True
     )
 
-    output = result.stdout.strip()
+    alerts = subprocess.run(
+        [sys.executable, "alert_classifier.py"],
+        capture_output=True,
+        text=True
+    )
+
+    health_output = health.stdout.strip()
+    alert_output = alerts.stdout.strip()
 
     return f"""
     <html>
@@ -24,8 +31,11 @@ def dashboard():
         <h1>AIOps Health Dashboard</h1>
 
         <h2>Live Health Summary</h2>
+        <pre>{health_output}</pre>
 
-        <pre>{output}</pre>
+        <h2>Alert Classification</h2>
+        <pre>{alert_output}</pre>
+
 
         <p>Dashboard refreshes every 5 seconds.</p>
     </body>
