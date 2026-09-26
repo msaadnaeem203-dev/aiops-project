@@ -6,20 +6,25 @@ app = Flask(__name__)
 
 @app.route("/")
 def dashboard():
-    health = subprocess.run(
+    health_result = subprocess.run(
         [sys.executable, "health_summary.py"],
         capture_output=True,
         text=True
     )
 
-    alerts = subprocess.run(
+    health_output = health_result.stdout.strip()
+
+    alert_result = subprocess.run(
         [sys.executable, "alert_classifier.py"],
         capture_output=True,
         text=True
     )
 
-    health_output = health.stdout.strip()
-    alert_output = alerts.stdout.strip()
+    alert_output = alert_result.stdout.strip()
+
+    info_count = alert_output.count("INFO")
+    warning_count = alert_output.count("WARNING")
+    critical_count = alert_output.count("CRITICAL")
 
     return f"""
     <html>
@@ -34,11 +39,10 @@ def dashboard():
         <pre>{health_output}</pre>
 
         <h2>Alert Summary</h2>
-        <p>INFO: 8 | WARNING: 2 | CRITICAL: 4</p>
+        <p>INFO: {info_count} | WARNING: {warning_count} | CRITICAL: {critical_count}</p>
 
         <h2>Alert Classification</h2>
         <pre>{alert_output}</pre>
-
 
         <p>Dashboard refreshes every 5 seconds.</p>
     </body>
