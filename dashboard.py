@@ -25,6 +25,7 @@ def dashboard():
     info_count = alert_output.count("INFO")
     warning_count = alert_output.count("WARNING")
     critical_count = alert_output.count("CRITICAL")
+    total_alerts = info_count + warning_count + critical_count
 
     return f"""
     <html>
@@ -32,6 +33,7 @@ def dashboard():
         <title>AIOps Health Dashboard</title>
         <meta http-equiv="refresh" content="5">
     </head>
+
     <body>
         <h1>AIOps Health Dashboard</h1>
 
@@ -39,6 +41,7 @@ def dashboard():
         <pre>{health_output}</pre>
 
         <h2>Alert Summary</h2>
+        <p>Total Alerts: {total_alerts}</p>
         <p>INFO: {info_count} | WARNING: {warning_count} | CRITICAL: {critical_count}</p>
 
         <h2>Alert Classification</h2>
