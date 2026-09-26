@@ -27,6 +27,11 @@ def dashboard():
     critical_count = alert_output.count("CRITICAL")
     total_alerts = info_count + warning_count + critical_count
 
+    if "HEALTHY" in health_output:
+        system_status = "HEALTHY"
+    else:
+        system_status = "ANOMALY"
+
     return f"""
     <html>
     <head>
@@ -36,6 +41,9 @@ def dashboard():
 
     <body>
         <h1>AIOps Health Dashboard</h1>
+
+        <h2>System Status</h2>
+        <p>{system_status}</p>
 
         <h2>Live Health Summary</h2>
         <pre>{health_output}</pre>
