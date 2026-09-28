@@ -2,8 +2,12 @@ import re
 
 LOG_FILE = "alerts.log"
 
+info_count = 0
+warning_count = 0
+critical_count = 0
+
 print("AIOps Alert Classifier")
-print("----------------------")
+print("----------------------------")
 
 try:
     with open(LOG_FILE, "r") as file:
@@ -27,6 +31,13 @@ try:
                 else:
                     severity = "INFO"
 
+                if severity == "INFO":
+                    info_count += 1
+                elif severity == "WARNING":
+                    warning_count += 1
+                elif severity == "CRITICAL":
+                    critical_count += 1
+
                 print(
                     f"CPU: {cpu:.1f}% | RAM: {ram:.1f}% | "
                     f"Severity: {severity}"
@@ -34,3 +45,9 @@ try:
 
 except FileNotFoundError:
     print("alerts.log not found.")
+
+print()
+print("Alert Summary")
+print(f"INFO: {info_count}")
+print(f"WARNING: {warning_count}")
+print(f"CRITICAL: {critical_count}")
