@@ -34,6 +34,8 @@ def dashboard():
 
     latest_alert = classified_lines[-1] if classified_lines else "NONE"
 
+    recent_alerts = classified_lines[-5:]
+
     info_count = sum(
         1 for alert in classified_lines
         if alert == "INFO"
@@ -71,6 +73,9 @@ def dashboard():
         <p>Total Alerts: {total_alerts}</p>
         <p>INFO: {info_count} | WARNING: {warning_count} | CRITICAL: {critical_count}</p>
         <p>Latest Alert: {latest_alert}</p>
+
+        <h2>Alert History</h2>
+        <pre>{"<br>".join(recent_alerts)}</pre>
 
         <h2>Alert Classification</h2>
         <pre>{alert_output}</pre>
