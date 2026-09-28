@@ -22,15 +22,34 @@ def dashboard():
 
     alert_output = alert_result.stdout.strip()
 
-    info_count = alert_output.count("INFO")
-    warning_count = alert_output.count("WARNING")
-    critical_count = alert_output.count("CRITICAL")
-    total_alerts = info_count + warning_count + critical_count
+    alert_lines = alert_output.splitlines()
 
-    if "HEALTHY" in health_output:
-        system_status = "HEALTHY"
-    else:
-        system_status = "ANOMALY"
+    classified_lines = [
+        line.strip().split()[-1]
+        for line in alert_lines
+        if line.strip()
+        and line.strip().split()[-1]
+    in ("INFO", "WARNING", "CRITICAL")
+    ]
+
+    latest_alert = classified_lines[-1] if classified_lines else "NONE"
+
+    info_count = sum(
+        1 for alert in classified_lines
+        if alert == "INFO"
+    )
+
+    warning_count = sum(
+        1 for alert in classified_lines
+        if alert == "WARNING"
+    )
+
+    critical_count = sum(
+        1 for alert in classified_lines
+        if alert == "CRITICAL"
+    )
+
+    total_alerts = info_count + warning_count + critical_count
 
     return f"""
     <html>
@@ -43,7 +62,7 @@ def dashboard():
         <h1>AIOps Health Dashboard</h1>
 
         <h2>System Status</h2>
-        <p>{system_status}</p>
+        <pre>{health_output}</pre>
 
         <h2>Live Health Summary</h2>
         <pre>{health_output}</pre>
@@ -51,6 +70,7 @@ def dashboard():
         <h2>Alert Summary</h2>
         <p>Total Alerts: {total_alerts}</p>
         <p>INFO: {info_count} | WARNING: {warning_count} | CRITICAL: {critical_count}</p>
+        <p>Latest Alert: {latest_alert}</p>
 
         <h2>Alert Classification</h2>
         <pre>{alert_output}</pre>
