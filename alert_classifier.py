@@ -45,9 +45,3 @@ try:
 
 except FileNotFoundError:
     print("alerts.log not found.")
-
-print()
-print("Alert Summary")
-print(f"INFO: {info_count}")
-print(f"WARNING: {warning_count}")
-print(f"CRITICAL: {critical_count}")
