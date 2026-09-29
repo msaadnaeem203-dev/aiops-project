@@ -1,11 +1,13 @@
 from flask import Flask
 import subprocess
 import sys
+from datetime import datetime
 
 app = Flask(__name__)
 
 @app.route("/")
 def dashboard():
+    current_time = datetime.now().strftime("%Y-%m-%d  %H:%M:%S")
     health_result = subprocess.run(
         [sys.executable, "health_summary.py"],
         capture_output=True,
@@ -62,6 +64,7 @@ def dashboard():
 
     <body>
         <h1>AIOps Health Dashboard</h1>
+        <p>Last Updated:  {current_time}</p>
 
         <h2>System Status</h2>
         <pre>{health_output}</pre>
