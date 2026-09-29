@@ -94,6 +94,9 @@ def dashboard():
             <div style="background:red; width:{critical_count * 10}%; height:20px;"></div>
         </div>
 
+        <h2> Recent Alert Trend</h2>
+        <pre>{" - ".join(recent_alerts)}</pre>
+
         <h2>Alert Classification</h2>
         <pre>{alert_output}</pre>
 
