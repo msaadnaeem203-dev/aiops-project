@@ -77,6 +77,23 @@ def dashboard():
         <h2>Alert History</h2>
         <pre>{"<br>".join(recent_alerts)}</pre>
 
+        <h2>Alert Severity Chart</h2>
+
+        <p>INFO:  {info_count}</p>
+        <div style="background:#ddd; width: 100%; height:20px;">
+            <div style="background:green; width:{info_count * 10}%; height:20px;"></div>
+        </div>
+
+        <p>WARNING:  {warning_count}</p>
+        <div style="background:#ddd; width:100%; height:20px;">
+            <div style="background:orange; width:{warning_count * 10}%; height:20px;"></div>
+        </div>
+
+        <p>CRITICAL:  {critical_count}</p>
+        <div style="background:#ddd; width:100%; height:20px:">
+            <div style="background:red; width:{critical_count * 10}%; height:20px;"></div>
+        </div>
+
         <h2>Alert Classification</h2>
         <pre>{alert_output}</pre>
 
