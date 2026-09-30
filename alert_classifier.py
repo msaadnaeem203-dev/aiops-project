@@ -13,16 +13,12 @@ try:
     with open(LOG_FILE, "r") as file:
         lines = file.readlines()
 
-    if not lines:
-        print("No alerts found.")
-    else:
         for line in lines:
-            cpu_match = re.search(r"CPU:\s*([\d.]+)%", line)
-            ram_match = re.search(r"RAM:\s*([\d.]+)%", line)
+            matches = re.findall(r"([\d.]+)%", line)
 
-            if cpu_match and ram_match:
-                cpu = float(cpu_match.group(1))
-                ram = float(ram_match.group(1))
+            if len(matches) >= 2:
+                cpu = float(matches[0])
+                ram = float(matches[1])
 
                 if cpu >= 90 or ram >= 90:
                     severity = "CRITICAL"
@@ -42,6 +38,11 @@ try:
                     f"CPU: {cpu:.1f}% | RAM: {ram:.1f}% | "
                     f"Severity: {severity}"
                 )
+
+    print("---------------------------------")
+    print(f"INFO: {info_count}")
+    print(f"WARNING: {warning_count}")
+    print(f"CRITICAL: {critical_count}")
 
 except FileNotFoundError:
     print("alerts.log not found.")
