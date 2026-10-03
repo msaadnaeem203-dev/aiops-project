@@ -1,59 +1,72 @@
-# AIOPS Monitoring and Health Dashboard
+AIOps Health Monitoring and Alert Dashboard
 
-## Overview
+Project Overview
+This project is an AIOps(Artifical Intelligence for IT Operatios) monitoring system built with Python and Flask.
 
-This project is an Artificial Intelligence for IT Operations (AIOps) monitoring system built with Python.
+It monitors system health, detects abnormal CPU and RAM usage, classifies alerts by severity, and displays the results through a web-based dashboard.
 
-It monitors system health, detects anomalies, classifies alerts, and displays the results through a Flask web dashboard.
-
-## Features
-
-- System CPU monitoring
-- RAM monitoring
-- Website health checking
-- Anomaly detection
+Features
+- System status monitoring
+- Live health summary
+- CPU and RAM monitoring
+- Website availability monitoring
+- Anomaly dtection
 - Alert logging
 - Alert severity classification
-- Health summary
+- Alert summary
+- Alert history
+- Alert severity chart
+- Recent alert trend
+- Dashboard timestamp
 - Flask web dashboard
-- Automatic dashboard refresh
 
-## Alert Severity
+Alert Severity
+Alerts are classified into three levels:
 
-- INFO - normal system activity
-- WARNING - elevated system usage
-- CRITICAL - very high system usage
+- INFO
+- WARNING
+- CRITICAL
 
-## Project Files
+Current test results
 
-- 'monitor.py' - system monitoring
-- 'anomaly_detector.py' - anomaly detection
-- 'alert_classifier.py' - alert severity classification
-- 'health_summary.py' - overall health summary
-' 'dashboard.py' - Flask dashboard
-- 'alerts.log' - recorded alerts
-- 'requirements.txt' - Python dependencies
+- INFO: 8
+- WARNIONG: 2
+- CRITICAL: 4
+- Total Alerts: 14
 
-## Technologies
-
+Technologies Used
 - Python
 - Flask
 - psutil
-- Linux / Ubuntu
-- Git and GitHub
+- HTML
+- Git
+- GitHub
+- Ubuntu Linux
+- Virtual Box
 
-## Dashboard
+Project Files
+- dashboard.py - Web dashboard
+- health_summary.py - System health summary
+- health_history.py - Health history
+- anomaly_detector.py - Detects abnormal system activity
+- alert_classifier.py - Classifies alerts by severity
+- monitor.py - Website and system monitoring
+- alerts.log - Alert log
+- requirements.txt - Python dependencies
 
-The dashboard displays:
+Dashboard Sections
+The dashboard currently includes:
 
-- System status
-- CPU usage
-- RAM usage
-- Website status
-- Total alerts
-- Alert severity counts
-- Alert classification
+1. System Status
+2. Live Health Summary
+3. Alert Summary
+4. Alert History
+5. Alert Severity Chart
+6. Recent Alert Trend
+7. Alert Classification
+8. Last Updated timestamp
 
-## Project Status
+Project Status
+The core AIOps monitoring dashboard is working successfully.
 
-The monitoring pipeline and web dashboard are working successfully.
+The project is being developed as part of my AIOps Level 6 diploma studies.
