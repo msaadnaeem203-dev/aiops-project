@@ -1,18 +1,16 @@
 from datetime import datetime
 
-HISTORY_FILE = "health_history.log"
+HEALTH_HISTORY_FILE = "health_history.log"
 
-def save_health(status, cpu, ram):
-    with open(HISTORY_FILE, "a") as file:
-        file.write(
-            f"{datetime.now()} | {status} | CPU: {cpu}% | RAM: {ram}% \n"
-        )
+health_status = "HEALTHY"
+cpu = 20.5
+ram = 35.2
 
-def show_history():
-    try:
-        with open(HISTORY_FILE, "r") as file:
-            print(file.read())
-    except FileNotFoundError:
-        print("No health history found.")
+timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-show_history()
+with open(HEALTH_HISTORY_FILE, "a") as file:
+    file.write(
+        f"{timestamp} | {health_status} | CPU: {cpu}% | RAM: {ram}%\n"
+    )
+
+print("Health history recorded successfully.")
