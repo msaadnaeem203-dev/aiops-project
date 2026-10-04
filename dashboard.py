@@ -22,6 +22,9 @@ def dashboard():
         text=True
     )
 
+    with open("health_history.log", "r") as file:
+        health_history = file.read().strip()
+
     alert_output = alert_result.stdout.strip()
 
     alert_lines = alert_output.splitlines()
@@ -102,6 +105,9 @@ def dashboard():
 
         <h2>Alert Classification</h2>
         <pre>{alert_output}</pre>
+
+        <h2>Health History</h2>
+        <pre>{health_history}</pre>
 
         <p>Dashboard refreshes every 5 seconds.</p>
     </body>
