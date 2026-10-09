@@ -1,13 +1,15 @@
 from flask import Flask
 import subprocess
 import sys
-from datetime import datetime
+import os
+import json
 
 app = Flask(__name__)
 
+
 @app.route("/")
 def dashboard():
-    current_time = datetime.now().strftime("%Y-%m-%d  %H:%M:%S")
+
     health_result = subprocess.run(
         [sys.executable, "health_summary.py"],
         capture_output=True,
@@ -16,92 +18,129 @@ def dashboard():
 
     health_output = health_result.stdout.strip()
 
-    alert_result = subprocess.run(
-        [sys.executable, "alert_classifier.py"],
-        capture_output=True,
-        text=True
+    alert_output = ""
+
+    if os.path.exists("alert_classifier.py"):
+        alert_result = subprocess.run(
+             [sys.executable, "alert_classifier.py"],
+             capture_output=True,
+             text=True
     )
-
-    with open("health_history.log", "r") as file:
-        health_history = file.read().strip()
-
     alert_output = alert_result.stdout.strip()
 
-    alert_lines = alert_output.splitlines()
+    recent_alerts = []
 
-    classified_lines = [
-        line.strip().split()[-1]
-        for line in alert_lines
-        if line.strip()
-        and line.strip().split()[-1]
-    in ("INFO", "WARNING", "CRITICAL")
-    ]
+    if os.path.exists("alerts_log"):
+        with open("alerts.log", "r") as file:
+            alert_lines = file.readlines()
 
-    latest_alert = classified_lines[-1] if classified_lines else "NONE"
+        recent_alerts = [
+            line.strip()
+            for line in alert_lines
+            if line.strip()
+        ][-5:]
 
-    recent_alerts = classified_lines[-5:]
+    health_history = ""
 
-    info_count = sum(
-        1 for alert in classified_lines
-        if alert == "INFO"
-    )
+    if os.path.exists("health_history.py"):
+         subprocess.run(
+             [sys.executable, "health_history.py"],
+             capture_output=True,
+             text=True
+             )
 
-    warning_count = sum(
-        1 for alert in classified_lines
-        if alert == "WARNING"
-    )
+    if os.path.exists("health_history.log"):
+        with open("health_history.log", "r") as file:
 
-    critical_count = sum(
-        1 for alert in classified_lines
-        if alert == "CRITICAL"
-    )
+            health_history = file.read().strip()
 
-    total_alerts = info_count + warning_count + critical_count
+    history_lines = health_history.splitlines()
+
+    chart_labels = []
+    chart_cpu = []
+    chart_ram = []
+
+    for line in history_lines:
+         parts = line.split("|")
+
+         if len(parts) >= 4:
+            try:
+                chart_labels.append(parts[0].strip())
+
+                cpu_value = float(parts[2].split(":")[1].replace("%", "").strip())
+                ram_value = float(parts[3].split(":")[1].replace("%", "").strip())
+
+                chart_cpu.append(cpu_value)
+                chart_ram.append(ram_value)
+
+            except (ValueError, IndexError):
+                continue
+
+    chart_labels_json = json.dumps(chart_labels)
+    chart_cpu_json = json.dumps(chart_cpu)
+    chart_ram_json = json.dumps(chart_ram)
 
     return f"""
+    <!DOCTYPE html>
     <html>
-    <head>
-        <title>AIOps Health Dashboard</title>
-        <meta http-equiv="refresh" content="5">
-    </head>
 
-    <body>
+    <head>
+
+        <title>AIOps Health Dashboard</title>
+
+        <meta http-equiv="refresh" content="5">
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+        <style>
+
+            body {{
+                font-family: Arial,
+    sans-serif;
+                margin: 30px;
+                background-color:
+    #f5f5f5;
+            }}
+
+            h1 {{
+                color: #444;
+            }}
+
+            pre {{
+                background: white;
+                padding: 15px;
+                border-radius: 8px;
+                border: 1px solid #ddd;
+                white-space: pre-wrap;
+            }}
+
+            #healthChart {{
+                background: white;
+                padding: 15px;
+                border-radius: 8px;
+                border: 1px solid #ddd;
+            }}
+
+            </style>
+
+        </head>
+
+        <body>
+
         <h1>AIOps Health Dashboard</h1>
-        <p>Last Updated:  {current_time}</p>
 
         <h2>System Status</h2>
-        <pre>{health_output}</pre>
+
+        <pre>Dashboard is running successfully.</pre>
 
         <h2>Live Health Summary</h2>
         <pre>{health_output}</pre>
 
         <h2>Alert Summary</h2>
-        <p>Total Alerts: {total_alerts}</p>
-        <p>INFO: {info_count} | WARNING: {warning_count} | CRITICAL: {critical_count}</p>
-        <p>Latest Alert: {latest_alert}</p>
+        <pre>{alert_output}</pre>
 
         <h2>Alert History</h2>
         <pre>{"<br>".join(recent_alerts)}</pre>
-
-        <h2>Alert Severity Chart</h2>
-
-        <p>INFO:  {info_count}</p>
-        <div style="background:#ddd; width: 100%; height:20px;">
-            <div style="background:green; width:{info_count * 10}%; height:20px;"></div>
-        </div>
-
-        <p>WARNING:  {warning_count}</p>
-        <div style="background:#ddd; width:100%; height:20px;">
-            <div style="background:orange; width:{warning_count * 10}%; height:20px;"></div>
-        </div>
-
-        <p>CRITICAL:  {critical_count}</p>
-        <div style="background:#ddd; width:100%; height:20px:">
-            <div style="background:red; width:{critical_count * 10}%; height:20px;"></div>
-        </div>
-
-        <h2> Recent Alert Trend</h2>
-        <pre>{" - ".join(recent_alerts)}</pre>
 
         <h2>Alert Classification</h2>
         <pre>{alert_output}</pre>
@@ -109,7 +148,46 @@ def dashboard():
         <h2>Health History</h2>
         <pre>{health_history}</pre>
 
-        <p>Dashboard refreshes every 5 seconds.</p>
+        <h2>Health History Chart</h2>
+
+        <canvas id="healthChart"></canvas>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+        <script>
+        const ctx = document.getElementById('healthChart');
+
+        new Chart(ctx, {{
+            type: 'line',
+            data: {{
+                labels:  {chart_labels_json},
+                datasets: [
+                    {{
+                        label: 'CPU %',
+                        data:  {chart_cpu_json},
+                        borderColor: 'blue',
+                        fill: false
+                    }},
+                    {{
+                        label: 'RAM %',
+                        data:  {chart_ram_json},
+                        borderColor: 'green',
+                        fill: false
+                    }}
+                ]
+            }},
+            options: {{
+                responsive: true,
+                scales: {{
+                    y: {{
+                        beginAtZero: true,
+                        max: 100
+                    }}
+                }}
+            }}
+    }});
+    </script>
+
     </body>
     </html>
     """
