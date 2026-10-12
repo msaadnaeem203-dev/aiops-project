@@ -129,6 +129,16 @@ def dashboard():
 
         <h1>AIOps Health Dashboard</h1>
 
+        <h2>AIOps Overview</h2>
+
+        <pre>
+        Website Monitoring: Active
+        CPU monitoring: Active
+        RAM Monitoring: Active
+        Alert Classification: Active
+        Health History: Recording
+        </pre>
+
         <h2>System Status</h2>
 
         <pre>Dashboard is running successfully.</pre>
