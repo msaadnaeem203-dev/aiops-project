@@ -30,7 +30,7 @@ def dashboard():
 
     recent_alerts = []
 
-    if os.path.exists("alerts_log"):
+    if os.path.exists("alerts.log"):
         with open("alerts.log", "r") as file:
             alert_lines = file.readlines()
 
