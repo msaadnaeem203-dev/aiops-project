@@ -15,7 +15,13 @@ try:
 
     cpu_status = "ANOMALY" if cpu > THRESHOLD else "Normal"
     ram_status = "ANOMALY" if ram > THRESHOLD else "Normal"
-    disk_status = "ANOMALY" if disk > DISK_THRESHOLD else "Normal"
+
+    if disk >= 90:
+        disk_status = "CRITICAL"
+    elif disk >= 80:
+        disk_status = "WARNING"
+    else:
+        disk_status = "Normal"
 
     if (
         website_status == "UP" and cpu_status == "Normal" and ram_status == "Normal" and disk_status == "Normal"
