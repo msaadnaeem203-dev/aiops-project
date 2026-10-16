@@ -59,19 +59,23 @@ def dashboard():
     chart_labels = []
     chart_cpu = []
     chart_ram = []
+    chart_disk = []
 
     for line in history_lines:
          parts = line.split("|")
 
-         if len(parts) >= 4:
+         if len(parts) >= 5:
             try:
-                chart_labels.append(parts[0].strip())
+
+                chart_labels.append(str(len(chart_labels) + 1))
 
                 cpu_value = float(parts[2].split(":")[1].replace("%", "").strip())
                 ram_value = float(parts[3].split(":")[1].replace("%", "").strip())
+                disk_value = float(parts[4].split(":")[1].replace("%", "").strip())
 
                 chart_cpu.append(cpu_value)
                 chart_ram.append(ram_value)
+                chart_disk.append(disk_value)
 
             except (ValueError, IndexError):
                 continue
@@ -79,6 +83,7 @@ def dashboard():
     chart_labels_json = json.dumps(chart_labels)
     chart_cpu_json = json.dumps(chart_cpu)
     chart_ram_json = json.dumps(chart_ram)
+    chart_disk_json = json.dumps(chart_disk)
 
     return f"""
     <!DOCTYPE html>
@@ -173,15 +178,24 @@ def dashboard():
                 labels:  {chart_labels_json},
                 datasets: [
                     {{
-                        label: 'CPU %',
+                        label: 'CPU Usage (%)',
                         data:  {chart_cpu_json},
                         borderColor: 'blue',
+                        tension: 0.3,
                         fill: false
                     }},
                     {{
-                        label: 'RAM %',
+                        label: 'RAM Usage (%)',
                         data:  {chart_ram_json},
                         borderColor: 'green',
+                        tension: 0.3,
+                        fill: false
+                    }},
+                    {{
+                        label: 'Disk Usage (%)',
+                        data: {chart_disk_json},
+                        borderColor: 'red',
+                        tension: 0.3,
                         fill: false
                     }}
                 ]
@@ -191,7 +205,12 @@ def dashboard():
                 scales: {{
                     y: {{
                         beginAtZero: true,
-                        max: 100
+                        min: 0,
+                        max: 100,
+                        title: {{
+                            display: true,
+                            text: 'Usage (%)'
+                        }}
                     }}
                 }}
             }}
