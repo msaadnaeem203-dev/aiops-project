@@ -40,9 +40,9 @@ try:
                 )
 
     print("---------------------------------")
-    print(f"INFO: {info_count}")
-    print(f"WARNING: {warning_count}")
-    print(f"CRITICAL: {critical_count}")
+    print(f"INFO alerts: {info_count}")
+    print(f"WARNING alerts: {warning_count}")
+    print(f"CRITICAL alerts: {critical_count}")
 
 except FileNotFoundError:
-    print("alerts.log not found.")
+    print(f"Error: {LOG_FILE} was not found.")
