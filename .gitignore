@@ -1,3 +1,4 @@
 monitor.log
 alerts.log
 __pycache__/
+health_history.log
